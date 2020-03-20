@@ -4,8 +4,13 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
-// bring routes
+// define routes
 const blogRoutes = require('./routes/api/blog');
+const userRoutes = require('./routes/api/user');
+
+// db connection
+const connectDB = require('./models/db_config');
+connectDB();
 
 // spin up the sever called app!
 const app = express();
@@ -14,10 +19,13 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+if (process.env.NODE_ENV == 'development') {
+	app.use(cors());
+}
 
 // routes
 app.use('/api', blogRoutes);
+app.use('/api/user', userRoutes);
 
 // listen
 // explanation on process.env:
